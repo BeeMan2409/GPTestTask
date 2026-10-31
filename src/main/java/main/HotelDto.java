@@ -1,9 +1,11 @@
 package main;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class HotelDto {
 
     // ===== Краткая информация (GET /hotels, /search, ответ POST /hotels) =====

@@ -3,10 +3,8 @@ package main;
 import jakarta.persistence.Entity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,5 +59,11 @@ public class HotelController {
         } else {
             return hotelManager.findByAmeneties(amenity).stream().map(hotelManager::toShort).toList();
         }
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public HotelResponse create(@RequestBody HotelCreateRequest request) {
+        return hotelService.create(request);
     }
 }
