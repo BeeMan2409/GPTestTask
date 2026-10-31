@@ -91,6 +91,7 @@ public class Hotel {
         this.adress = adress;
         this.phone = phone;
         this.description = description;
+        this.houseNum = "0";
         amenities.add("-");
     }
 

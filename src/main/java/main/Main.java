@@ -26,7 +26,7 @@ public class Main {
         thread.start();
         SpringApplication.run(Main.class, args);
         start = true;
-        System.out.println("Done(" + i + "ms)");
+        System.out.println("Done(" + ((double) i / 10) + "s)");
     }
 
 }
