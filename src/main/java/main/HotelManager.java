@@ -1,12 +1,14 @@
 package main;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class HotelManager {
@@ -80,7 +82,6 @@ public class HotelManager {
     }
 
     public HotelDto.Short toShort(Hotel h) {
-        // address в краткой форме — одна строка, склеиваем из полей
         String addr = h.getHouseNum() + " " + h.getStreet() + ", "
                 + h.getCity() + ", " + h.getPostCode() + ", " + h.getCountry();
         return new HotelDto.Short(h.getId(), h.getName(), h.getDescription(), addr, h.getPhone());
@@ -99,10 +100,10 @@ public class HotelManager {
 
         dto.setContacts(new HotelDto.Full.Contacts(h.getPhone(), h.getEmail()));
 
-        int[] at = h.getArivalTime();
+        String[] at = h.getArivalTime();
         dto.setArrivalTime(new HotelDto.Full.ArrivalTime(
-                String.format("%02d:00", at[0]),
-                String.format("%02d:00", at[1])));
+                String.format(at[0]),
+                String.format(at[1])));
 
         dto.setAmenities(h.getAmenities());
         return dto;
@@ -120,6 +121,50 @@ public class HotelManager {
                 .filter(h -> country == null || country.isBlank()
                         || h.getCountry().equalsIgnoreCase(country))
                 .toList();
+    }
+
+    public Hotel create(HotelDto.HotelCreateRequest request) {
+        Hotel hotel = new Hotel();
+        hotel.setName(request.getName());
+        hotel.setDescription(request.getDescription());
+        hotel.setBrand(request.getBrand());
+
+        if (request.getAddress() != null) {
+            HotelDto.HotelCreateRequest.Address addr = request.getAddress();
+            hotel.setHouseNum(addr.getHouseNumber());
+            hotel.setStreet(addr.getStreet());
+            hotel.setCity(addr.getCity());
+            hotel.setCountry(addr.getCountry());
+            hotel.setPostCode(addr.getPostCode());
+        }
+
+        if (request.getContacts() != null) {
+            hotel.setPhone(request.getContacts().getPhone());
+            hotel.setEmail(request.getContacts().getEmail());
+        }
+
+        if (request.getArrivalTime() != null) {
+            String checkIn = (request.getArrivalTime().getCheckIn());
+            String checkOut = (request.getArrivalTime().getCheckOut());
+            hotel.setArivalTime(new String[]{checkIn, checkOut});
+        }
+
+        return hotelDB.save(hotel);
+    }
+
+    @Transactional
+    public void setAmenities(List<String> amenities, int id){
+        Hotel hotel = hotelDB.findById(id);
+        hotel.setAmenities(amenities);
+    }
+
+    @Transactional
+    public List<String> histogram(String param){
+        @Query("SELECT h. " + param + " , COUNT(h) FROM Hotel h GROUP BY h.city")
+        List<Hotel> hotels();
+        for (Hotel el: hotels){
+
+        }
     }
 
 }

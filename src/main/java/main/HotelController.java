@@ -1,12 +1,9 @@
 package main;
 
-import jakarta.persistence.Entity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -61,9 +58,21 @@ public class HotelController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/property-view/hotels")
     @ResponseStatus(HttpStatus.CREATED)
-    public HotelResponse create(@RequestBody HotelCreateRequest request) {
-        return hotelService.create(request);
+    public Hotel create(@RequestBody HotelDto.HotelCreateRequest request) {
+        return hotelManager.create(request);
+    }
+
+    @PostMapping("/property-view/hotels/{id}/amenities")
+    @ResponseStatus(HttpStatus.OK)
+    public HotelDto.Full addAmenities(@RequestBody List<String> amenities, @PathVariable int id){
+        hotelManager.setAmenities(amenities, id);
+        return hotelManager.toFull(hotelManager.searchById(id));
+    }
+
+    @GetMapping("/property-view/hotels/histogram/{param}")
+    public String histogram(@PathVariable String param){
+        return
     }
 }

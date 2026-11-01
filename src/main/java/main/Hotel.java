@@ -14,7 +14,7 @@ public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int[] arivalTime = {0, 24};
+    private String[] arivalTime = {"00:00", "23:00"};
     private String name;
     private String description;
     private String phone;
@@ -28,7 +28,63 @@ public class Hotel {
     private String brand;
     private List<String> amenities = new ArrayList<>();
 
-    public int[] getArivalTime() {
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public void setPostCode(String postCode) {
+        this.postCode = postCode;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setHouseNum(String houseNum) {
+        this.houseNum = houseNum;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public void setArivalTime(String[] arivalTime) {
+        this.arivalTime = arivalTime;
+    }
+
+    public void setAmenities(List<String> amenities) {
+        this.amenities = amenities;
+    }
+
+    public void setAdress(String adress) {
+        this.adress = adress;
+    }
+
+    public String[] getArivalTime() {
         return arivalTime;
     }
 
