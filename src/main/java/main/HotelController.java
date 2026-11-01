@@ -4,7 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class HotelController {
@@ -24,8 +28,9 @@ public class HotelController {
         return "add hotel " + hotel.getId() + " " + hotel.getName();
     }
 
-    @GetMapping("/property-view/hotels/remove")
-    public String remove(@RequestParam Integer id){
+    @DeleteMapping("/property-view/hotels/remove/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public String remove(@PathVariable Integer id){
         Hotel hotel = hotelManager.searchById(id);
         hotelManager.removeById(id);
         return "completed remove " + hotel.getName();
@@ -64,15 +69,43 @@ public class HotelController {
         return hotelManager.create(request);
     }
 
-    @PostMapping("/property-view/hotels/{id}/amenities")
-    @ResponseStatus(HttpStatus.OK)
-    public HotelDto.Full addAmenities(@RequestBody List<String> amenities, @PathVariable int id){
-        hotelManager.setAmenities(amenities, id);
-        return hotelManager.toFull(hotelManager.searchById(id));
+    @GetMapping("/property-view/hotels/histogram/{param}")
+    public List<String> histogram(@PathVariable String param) {
+        ArrayList<String> hist = new ArrayList<>();
+        String repeat = null;
+        int count = 0;
+        String s = "";
+        for (String el : hotelManager.histogram(param)) {
+            for (String el2 : hotelManager.histogram(param)) {
+                if (el.equals(el2)) {
+                    count++;
+                }
+            }
+            if (!hist.contains(el + ": " + count)) {
+                hist.add(el + ": " + count);
+            }
+            count = 0;
+        }
+        return hist;
     }
 
-    @GetMapping("/property-view/hotels/histogram/{param}")
-    public String histogram(@PathVariable String param){
-        return
+    @GetMapping("/property-view/hotels/histogram/amenities")
+    public Map<String, Long> amenitiesHistogram() {
+        List<Hotel> hotels = hotelManager.getAll();
+        Map<String, Long> hist = new LinkedHashMap<>();
+
+        for (Hotel hotel : hotels) {
+            for (String amenity : hotel.getAmenities()) {
+                hist.merge(amenity, 1L, Long::sum);
+            }
+        }
+        return hist;
+    }
+
+    @PostMapping("/property-view/hotels/{id}/amenities")
+    @ResponseStatus(HttpStatus.OK)
+    public HotelDto.Full setAmenities(@PathVariable Integer id,@RequestBody List<String> am){
+        hotelManager.setAmenities(id,am);
+        return hotelManager.toFull(hotelManager.searchById(id));
     }
 }

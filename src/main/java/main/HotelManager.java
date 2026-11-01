@@ -160,11 +160,32 @@ public class HotelManager {
 
     @Transactional
     public List<String> histogram(String param){
-        @Query("SELECT h. " + param + " , COUNT(h) FROM Hotel h GROUP BY h.city")
-        List<Hotel> hotels();
-        for (Hotel el: hotels){
+        List<Hotel> hotels = hotelDB.findAll();
+        ArrayList<String> hist = new ArrayList<>();
+        switch (param){
+            case "city" ->{
+                for (Hotel el: hotels){
+                    hist.add(el.getCity());
+                }
+            }
+                case "country" ->{
+                    for (Hotel el: hotels){
+                        hist.add(el.getCountry());
+                    }
+                }
+                    case "brand" -> {
+                        for (Hotel el : hotels) {
+                            hist.add(el.getBrand());
+                        }
+                    }
+                }
+        return hist;
+    }
 
-        }
+    @Transactional
+    public void setAmenities(int id, List<String> l){
+        Hotel hotel = hotelDB.findById(id);
+        hotel.setAmenities(l);
     }
 
 }

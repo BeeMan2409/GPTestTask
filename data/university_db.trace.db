@@ -1,6 +1,0 @@
-2026-10-30 15:32:31.077735+03:00 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "HOTEL" not found (this database is empty); SQL statement:
-select h1_0.id,h1_0.name from hotel h1_0 [42104-240]
-2026-10-30 15:33:59.130170+03:00 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "HOTEL" not found (this database is empty); SQL statement:
-insert into hotel (name,id) values (?,default) [42104-240]

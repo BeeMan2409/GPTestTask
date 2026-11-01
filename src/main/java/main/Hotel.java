@@ -1,9 +1,9 @@
 package main;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,9 @@ public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String[] arivalTime = {"00:00", "23:00"};
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "arival_time", columnDefinition = "varchar array")
+    private String[] arivalTime = {"0", "23"};
     private String name;
     private String description;
     private String phone;
@@ -26,6 +28,9 @@ public class Hotel {
     private String houseNum;
     private String street;
     private String brand;
+    @ElementCollection
+    @CollectionTable(name = "hotel_amenities", joinColumns = @JoinColumn(name = "hotel_id"))
+    @Column(name = "amenity")
     private List<String> amenities = new ArrayList<>();
 
     public void setStreet(String street) {
@@ -76,6 +81,7 @@ public class Hotel {
         this.arivalTime = arivalTime;
     }
 
+    @Transactional
     public void setAmenities(List<String> amenities) {
         this.amenities = amenities;
     }
