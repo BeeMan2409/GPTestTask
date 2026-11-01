@@ -91,15 +91,7 @@ public class HotelController {
 
     @GetMapping("/property-view/hotels/histogram/amenities")
     public Map<String, Long> amenitiesHistogram() {
-        List<Hotel> hotels = hotelManager.getAll();
-        Map<String, Long> hist = new LinkedHashMap<>();
-
-        for (Hotel hotel : hotels) {
-            for (String amenity : hotel.getAmenities()) {
-                hist.merge(amenity, 1L, Long::sum);
-            }
-        }
-        return hist;
+        return hotelManager.amenitiesHistogram();
     }
 
     @PostMapping("/property-view/hotels/{id}/amenities")

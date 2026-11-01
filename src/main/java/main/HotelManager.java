@@ -6,9 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class HotelManager {
@@ -186,6 +184,19 @@ public class HotelManager {
     public void setAmenities(int id, List<String> l){
         Hotel hotel = hotelDB.findById(id);
         hotel.setAmenities(l);
+    }
+
+    @Transactional
+    public Map<String, Long> amenitiesHistogram() {
+        List<Hotel> hotels = hotelDB.findAll();
+        Map<String, Long> hist = new LinkedHashMap<>();
+
+        for (Hotel hotel : hotels) {
+            for (String amenity : hotel.getAmenities()) {
+                hist.merge(amenity, 1L, Long::sum);
+            }
+        }
+        return hist;
     }
 
 }
